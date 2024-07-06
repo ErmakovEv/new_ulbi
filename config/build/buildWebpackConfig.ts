@@ -5,7 +5,9 @@ import { buildResolve } from './buildResolve';
 import { BuildOptions } from './types/config';
 import webpack from 'webpack';
 
-export const buildWebpackConfig = (options: BuildOptions): webpack.Configuration => ({
+export const buildWebpackConfig = (
+  options: BuildOptions
+): webpack.Configuration => ({
   mode: options.mode,
   entry: options.path.entry,
   output: {
@@ -13,11 +15,11 @@ export const buildWebpackConfig = (options: BuildOptions): webpack.Configuration
     path: options.path.output,
     clean: true,
   },
-  plugins: buildPlugins(options.path.html),
+  plugins: buildPlugins(options.path.html, options.isDev),
   module: {
     rules: buildLoaders(options.isDev),
   },
-  resolve: buildResolve(),
+  resolve: buildResolve(options.path),
   devtool: options.isDev ? 'inline-source-map' : undefined,
   devServer: options.isDev ? buildDevServer(options) : undefined,
 });

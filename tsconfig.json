@@ -10,9 +10,9 @@
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "*": ["./src/;"]
+      "*": ["./src/*"]
     }
   },
   "ts-node": {
@@ -21,12 +21,12 @@
     }
   },
   "include": [
-    "./src",
-    "./config",
-    ".eslintrc.js",
-    "config/jest/jest.config.ts",
-    "webpack.config.ts",
-    "./config/jest/setupTests.ts"
-    //    "json-server/index.js"
+    "./src/**/*.ts",
+    "./src/**/*.tsx",
+    // "./config",
+    // ".eslintrc.js",
+    // "webpack.config.ts",
+    "./config/jest/setupTests.ts",
+    "./config/jest/jest-setup.ts"
   ]
 }

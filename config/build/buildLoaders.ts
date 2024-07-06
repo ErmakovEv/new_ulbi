@@ -1,6 +1,7 @@
 //правила для обрабоки всех типов файлов кроме js, json
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+
 import webpack from 'webpack';
+import { buildCssLoader } from './loaders/buildCssLoader';
 
 export const buildLoaders = (isDev: boolean): webpack.RuleSetRule[] => {
   const typescriptLoader = {
@@ -9,26 +10,42 @@ export const buildLoaders = (isDev: boolean): webpack.RuleSetRule[] => {
     exclude: /node_modules/,
   };
 
-  const scssLoader = {
-    test: /\.s[ac]ss$/i,
+  const scssLoader = buildCssLoader(isDev);
+
+  const svgLoader = {
+    test: /\.svg$/i,
+    issuer: /\.[jt]sx?$/,
+    use: ['@svgr/webpack'],
+  };
+
+  const fileLoader = {
+    test: /\.(png|jpe?g|gif)$/i,
     use: [
-      // Creates `style` nodes from JS strings
-      isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
-      // Translates CSS into CommonJS
       {
-        loader: 'css-loader',
-        options: {
-          modules: {
-            auto: (resPath: string) => resPath.includes('.module'),
-            namedExport: true,
-            localIdentName: isDev ? '[name]__[local]--[hash:base64:5]' : '[hash:base64:5]',
-          },
-        },
+        loader: 'file-loader',
       },
-      // Compiles Sass to CSS
-      'sass-loader',
     ],
   };
 
-  return [typescriptLoader, scssLoader];
+  const babelLoader = {
+    test: /\.(js|jsx|tsx)$/,
+    exclude: /node_modules/,
+    use: {
+      loader: 'babel-loader',
+      options: {
+        presets: ['@babel/preset-env'],
+        plugins: [
+          [
+            'i18next-extract',
+            {
+              locales: ['ru', 'en'],
+              keyAsDefaultValue: true,
+            },
+          ],
+        ],
+      },
+    },
+  };
+
+  return [fileLoader, svgLoader, babelLoader, typescriptLoader, scssLoader];
 };
